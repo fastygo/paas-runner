@@ -2,6 +2,8 @@
 
 `paas` is a single-binary Go CLI that executes a deterministic YAML DSL locally or over SSH.
 
+**Documentation:** introductory guides live under [docs/](docs/README.md) (101-level sections in separate folders).
+
 ## Built-in extension sources
 
 Runtime extension lookup order is:
