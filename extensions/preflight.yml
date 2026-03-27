@@ -1,30 +1,45 @@
+# Mirror of internal/extensions/preflight.yml for local visibility.
 id: preflight
-name: Preflight check
-description: Verify server prerequisites
+name: Local Preflight Check
+description: Verify the local workstation can run the deploy workflow
 steps:
   - id: check_bash
     run: 'bash --version | head -1'
-    description: 'Check bash'
+    description: "Check bash"
+    local: true
+  - id: check_git
+    run: 'git --version'
+    description: "Check git"
+    local: true
   - id: check_docker
     run: 'docker --version'
-    description: 'Check docker'
+    description: "Check docker"
+    local: true
   - id: check_docker_compose
     run: 'docker compose version'
-    description: 'Check docker compose'
+    description: "Check docker compose"
+    local: true
   - id: check_curl
     run: 'curl --version | head -1'
-    description: 'Check curl'
+    description: "Check curl"
+    local: true
   - id: check_jq
     run: 'jq --version'
-    description: 'Check jq'
-  - id: check_tar
-    run: 'tar --version | head -1'
-    description: 'Check tar'
+    description: "Check jq"
+    local: true
   - id: check_user
     run: 'whoami'
     capture: current_user
-    description: 'Capture current user'
+    description: "Check current user"
+    local: true
   - id: check_docker_access
     run: 'docker ps > /dev/null 2>&1 && echo ok || echo no_access'
     capture: docker_access
-    description: 'Check docker socket access'
+    description: "Check docker access"
+    local: true
+  - id: summary
+    run: |
+      echo "User: ${STEP_CURRENT_USER}"
+      echo "Docker: ${STEP_DOCKER_ACCESS}"
+    description: "Print summary"
+    local: true

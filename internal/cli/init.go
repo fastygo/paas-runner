@@ -13,10 +13,10 @@ import (
 const defaultConfigTemplate = `server: production
 
 defaults:
-  APP_NAME: starter
-  APP_ID: starter-6e62b32b
-  IMAGE_REPO: phpfasty/starter
-  REGISTRY_HOST: buildy-apps.registry.twcstorage.ru
+  INPUT_APP_NAME: starter
+  INPUT_REGISTRY_HOST: registry.example.com
+  INPUT_IMAGE_REPOSITORY: starter/app
+  INPUT_DASHBOARD_URL: https://dashboard.example.com
 
 extensions_dir: .paas/extensions
 `
@@ -33,7 +33,14 @@ func initCommand(args []string) error {
 		return err
 	}
 
-	if err := os.WriteFile(config.ProjectConfigPath(), []byte(defaultConfigTemplate), 0o644); err != nil {
+	configPath := config.ProjectConfigPath()
+	if _, err := os.Stat(configPath); err == nil {
+		return fmt.Errorf("%s already exists", configPath)
+	} else if !os.IsNotExist(err) {
+		return err
+	}
+
+	if err := os.WriteFile(configPath, []byte(defaultConfigTemplate), 0o644); err != nil {
 		return err
 	}
 

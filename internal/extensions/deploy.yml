@@ -1,4 +1,3 @@
-# Mirror of internal/extensions/deploy.yml for local visibility.
 id: deploy
 name: Build and Deploy
 description: Build locally, push to the registry, and deploy through the dashboard API

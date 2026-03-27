@@ -11,8 +11,14 @@ func NewSecretMasker() *SecretMasker {
 }
 
 func (m *SecretMasker) AddSecret(value string) {
-	if value == "" || len(value) < 3 {
+	if value == "" {
 		return
+	}
+
+	for _, existing := range m.secrets {
+		if existing == value {
+			return
+		}
 	}
 
 	m.secrets = append(m.secrets, value)
@@ -20,8 +26,7 @@ func (m *SecretMasker) AddSecret(value string) {
 
 func (m *SecretMasker) AddFromEnv(env map[string]string) {
 	for key, value := range env {
-		keyLower := strings.ToLower(key)
-		if strings.Contains(keyLower, "pass") || strings.Contains(keyLower, "token") || strings.Contains(keyLower, "secret") || strings.Contains(keyLower, "key") {
+		if isSensitiveEnvKey(key) {
 			m.AddSecret(value)
 		}
 	}
@@ -47,4 +52,23 @@ func (m *SecretMasker) Mask(value string) string {
 	}
 
 	return result
+}
+
+func isSensitiveEnvKey(key string) bool {
+	keyLower := strings.ToLower(key)
+
+	sensitiveParts := []string{
+		"pass",
+		"password",
+		"token",
+		"secret",
+	}
+
+	for _, part := range sensitiveParts {
+		if strings.Contains(keyLower, part) {
+			return true
+		}
+	}
+
+	return false
 }

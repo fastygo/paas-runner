@@ -1,8 +1,33 @@
 id: logs
-name: App Logs
-description: Show app logs
+name: Dashboard Logs
+description: Fetch dashboard logs for an application
+inputs:
+  - name: app_id
+    label: Application id
+    type: text
+    required: true
+  - name: dashboard_url
+    label: Dashboard URL
+    type: text
+    required: true
+  - name: dashboard_user
+    label: Dashboard user
+    type: text
+    required: true
+  - name: dashboard_pass
+    label: Dashboard password
+    type: password
+    required: true
+  - name: lines
+    label: Number of log lines
+    type: text
+    default: "120"
 steps:
-  - id: app_logs
-    run: 'docker logs --tail 200 $(docker ps --filter "name=${INPUT_APP_NAME}" --format "{{.ID}}")'
-    description: 'Read logs'
-    local: false
+  - id: fetch_logs
+    run: |
+      set -eu
+      curl --show-error --silent \
+        -u "${INPUT_DASHBOARD_USER}:${INPUT_DASHBOARD_PASS}" \
+        "${INPUT_DASHBOARD_URL}/api/apps/${INPUT_APP_ID}/logs?lines=${INPUT_LINES}"
+    description: "Fetch dashboard logs"
+    local: true
