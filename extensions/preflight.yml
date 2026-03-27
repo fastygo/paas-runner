@@ -1,0 +1,30 @@
+id: preflight
+name: Preflight check
+description: Verify server prerequisites
+steps:
+  - id: check_bash
+    run: 'bash --version | head -1'
+    description: 'Check bash'
+  - id: check_docker
+    run: 'docker --version'
+    description: 'Check docker'
+  - id: check_docker_compose
+    run: 'docker compose version'
+    description: 'Check docker compose'
+  - id: check_curl
+    run: 'curl --version | head -1'
+    description: 'Check curl'
+  - id: check_jq
+    run: 'jq --version'
+    description: 'Check jq'
+  - id: check_tar
+    run: 'tar --version | head -1'
+    description: 'Check tar'
+  - id: check_user
+    run: 'whoami'
+    capture: current_user
+    description: 'Capture current user'
+  - id: check_docker_access
+    run: 'docker ps > /dev/null 2>&1 && echo ok || echo no_access'
+    capture: docker_access
+    description: 'Check docker socket access'

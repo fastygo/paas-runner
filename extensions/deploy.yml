@@ -1,0 +1,68 @@
+id: deploy
+name: Build and Deploy
+description: Default deployment extension
+inputs:
+  - name: app_name
+    label: Application name
+    type: text
+    default: starter
+  - name: app_id
+    label: Application id
+    type: text
+    required: true
+  - name: registry_host
+    label: Registry host
+    type: text
+    default: buildy-apps.registry.twcstorage.ru
+  - name: tag
+    label: Image tag
+    type: text
+    default: latest
+  - name: dashboard_user
+    label: Dashboard user
+    type: text
+    default: admin
+  - name: dashboard_pass
+    label: Dashboard pass
+    type: password
+    required: true
+steps:
+  - id: prepare_tag
+    run: 'git rev-parse --short=12 HEAD'
+    capture: tag
+    description: 'Prepare image tag'
+  - id: build_image
+    run: 'docker build -t ${REGISTRY_HOST}/${INPUT_APP_NAME}:${INPUT_TAG} .'
+    description: 'Build image'
+  - id: docker_login
+    run: 'docker login ${REGISTRY_HOST} -u ${INPUT_DASHBOARD_USER} -p ${INPUT_DASHBOARD_PASS}'
+    description: 'Login registry'
+    local: false
+  - id: push_image
+    run: 'docker push ${REGISTRY_HOST}/${INPUT_APP_NAME}:${INPUT_TAG}'
+    description: 'Push image'
+  - id: render_compose
+    run: 'docker compose config'
+    capture: compose_yaml
+    description: 'Render compose config'
+  - id: api_update
+    run: |
+      echo '{"name":"'"'"'${INPUT_APP_ID}"'"'","compose_yaml":"'"'"'${STEP_COMPOSE_YAML}'"'"'"}' > /tmp/dashboard-update.json
+    description: 'Build dashboard payload (local shell)'
+  - id: api_send
+    run: |
+      curl --fail -u "${INPUT_DASHBOARD_USER}:${INPUT_DASHBOARD_PASS}" \
+        -X PUT "http://127.0.0.1:3000/api/apps/${INPUT_APP_ID}" \
+        -H 'Content-Type: application/json' \
+        --data @/tmp/dashboard-update.json
+    description: 'Update dashboard'
+    when: STEP_COMPOSE_YAML != ""
+  - id: restart_if_running
+    run: 'docker ps --format "{{.Names}}" | grep -c ${INPUT_APP_NAME} || echo 0'
+    capture: container_count
+    description: 'Check old container count'
+    ignore_error: true
+  - id: stop_old
+    run: 'docker stop ${INPUT_APP_NAME} || true'
+    description: 'Stop old container if exists'
+    when: STEP_CONTAINER_COUNT != "0"

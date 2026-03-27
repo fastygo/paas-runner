@@ -1,0 +1,7 @@
+id: status
+name: Service Status
+description: Print docker compose status
+steps:
+  - id: check_status
+    run: 'docker ps --format "table {{.Names}}\t{{.Status}}"'
+    description: 'Show running containers'

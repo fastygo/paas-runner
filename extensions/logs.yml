@@ -1,0 +1,8 @@
+id: logs
+name: App Logs
+description: Show app logs
+steps:
+  - id: app_logs
+    run: 'docker logs --tail 200 $(docker ps --filter "name=${INPUT_APP_NAME}" --format "{{.ID}}")'
+    description: 'Read logs'
+    local: false
