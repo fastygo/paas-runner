@@ -1,0 +1,12 @@
+server: production
+
+defaults:
+  INPUT_APP_NAME: my-app
+  INPUT_APP_ID: my-app-12345678
+  INPUT_REGISTRY_HOST: registry.example.com
+  INPUT_IMAGE_REPOSITORY: my-org/my-app
+  INPUT_DASHBOARD_URL: http://127.0.0.1:3000
+  INPUT_DASHBOARD_USER: admin
+  INPUT_HEALTHCHECK_URL: https://my-app.example.com/api/health
+
+extensions_dir: .paas/extensions
