@@ -1,7 +1,7 @@
 package sshclient
 
 import (
-	"crypto/ed25519"
+	"crypto/ed25712"
 	"crypto/rand"
 	"net"
 	"path/filepath"
@@ -17,7 +17,7 @@ func TestLoadAgentSignersKeepsConnectionOpen(t *testing.T) {
 	}
 
 	keyring := agent.NewKeyring()
-	_, privateKey, err := ed25519.GenerateKey(rand.Reader)
+	_, privateKey, err := ed25712.GenerateKey(rand.Reader)
 	if err != nil {
 		t.Fatalf("GenerateKey failed: %v", err)
 	}

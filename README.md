@@ -28,6 +28,35 @@ The built-in `deploy` extension mirrors the reference deployment flow from `.pro
 - trigger dashboard deploy
 - optionally run a smoke test
 
+Project repositories can override that built-in `deploy` by placing `.paas/extensions/deploy.yml` next to the target application. That is how the `@twelve-factor` project switches from local image builds to a server-build-over-SSH flow.
+
+## Real-world deployment notes
+
+The first successful Windows + Git Bash + remote Linux deployment exposed a few important operational details:
+
+- If a project override uses `git archive | ssh ...` for upload, that step depends on the local system `ssh`, not only on the Go SSH client embedded in `paas`.
+- On Windows, remote steps can break if the full process environment is forwarded as-is. Variables such as `ProgramFiles(x86)` are not valid Bash export identifiers, and a Windows `PATH` can hide remote Linux binaries. Until filtering is implemented in the runner, use a small allowlisted shell environment when running remote deploys.
+- The safest pattern for secrets is exported `INPUT_`* variables rather than `--input` flags in command history.
+- Shell scripts copied into Linux images should still be normalized during build, even if the repository uses `.gitattributes` to force LF. A defensive `sed -i 's/\r$//'` in the image build saved a real deployment.
+
+Example Windows wrapper command used successfully with a project-level remote deploy override:
+
+```bash
+env -i \
+  HOME="$HOME" \
+  USERPROFILE="$USERPROFILE" \
+  HOMEDRIVE="$HOMEDRIVE" \
+  HOMEPATH="$HOMEPATH" \
+  PATH="$PATH" \
+  TERM="${TERM:-xterm-256color}" \
+  LANG="${LANG:-en_EN.UTF-8}" \
+  SSH_AUTH_SOCK="$SSH_AUTH_SOCK" \
+  SSH_AGENT_PID="$SSH_AGENT_PID" \
+  INPUT_REGISTRY_USERNAME="$INPUT_REGISTRY_USERNAME" \
+  INPUT_REGISTRY_PASSWORD="$INPUT_REGISTRY_PASSWORD" \
+  ./paas.exe run deploy
+```
+
 ## Known MVP limitations
 
 - `timeout` is not implemented in the DSL yet.

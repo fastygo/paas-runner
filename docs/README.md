@@ -15,6 +15,14 @@ Introductory (**101**) guides live in separate folders below. Each folder is sel
 9. [Security](101-security/README.md) — masking, secrets, operational hygiene  
 10. [Limitations](101-limitations/README.md) — MVP gaps and future work  
 
+The docs now also reflect a real Windows + Git Bash deployment that:
+
+- uploaded source with `git archive | ssh`
+- built the image on the remote Linux server
+- pushed it to a private registry
+- updated the dashboard API
+- exposed the site successfully over HTTPS
+
 ## Quick links
 
 | Topic | Folder |

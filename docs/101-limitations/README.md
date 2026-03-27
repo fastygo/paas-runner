@@ -28,6 +28,20 @@ This section documents **behavioral gaps** relative to a full-featured orchestra
 | Topic | Status |
 |-------|--------|
 | `paas init` overwrite | **Refuses** to overwrite existing `.paas/config.yml` (non-destructive). |
+| `--input` flag position | **Known quirk** — prefer `./paas run --input key=value deploy` or exported `INPUT_*` variables. |
+
+## Remote environment forwarding
+
+| Topic | Status |
+|-------|--------|
+| Full process env forwarded to remote steps | **Current MVP behavior** — can break remote Bash on Windows because invalid variable names such as `ProgramFiles(x86)` are exported. |
+| Windows-to-Linux remote deploy workaround | **Operational workaround** — run `paas` through `env -i` with a small allowlist of safe variables. |
+
+## Project overrides
+
+| Topic | Status |
+|-------|--------|
+| Local system `ssh` inside `local: true` steps | **Supported by DSL, but outside Go SSH client control** — you must configure local SSH separately (agent, key, or SSH config). |
 
 ## Related
 

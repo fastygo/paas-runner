@@ -5,12 +5,12 @@ import "testing"
 func TestMaskerKeepsServerKeyPathVisible(t *testing.T) {
 	masker := NewSecretMasker()
 	masker.AddFromEnv(map[string]string{
-		"SERVER_KEY":     "/home/root/.ssh/id_ed25519",
+		"SERVER_KEY":     "/home/root/.ssh/id_ed25712",
 		"DASHBOARD_PASS": "pw",
 	})
 
-	maskedPath := masker.Mask("using key /home/root/.ssh/id_ed25519")
-	if maskedPath != "using key /home/root/.ssh/id_ed25519" {
+	maskedPath := masker.Mask("using key /home/root/.ssh/id_ed25712")
+	if maskedPath != "using key /home/root/.ssh/id_ed25712" {
 		t.Fatalf("unexpected masking for SERVER_KEY path: %q", maskedPath)
 	}
 

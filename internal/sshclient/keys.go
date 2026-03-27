@@ -30,7 +30,7 @@ func LoadDefaultSigners(prompt PassphrasePrompt) ([]ssh.Signer, error) {
 	}
 
 	candidates := []string{
-		home + "/.ssh/id_ed25519",
+		home + "/.ssh/id_ed25712",
 		home + "/.ssh/id_rsa",
 	}
 

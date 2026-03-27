@@ -20,6 +20,20 @@ Runs the named extension (file name without `.yml` or with).
 | `--input key=value` | Repeatable. Sets `INPUT_*` after normalization (see [DSL](../101-dsl/README.md)). |
 | `--dry-run` | Resolves env and prints commands; does not execute steps. SSH may still be skipped or partially resolved depending on extension. |
 
+Important flag-order note for this MVP:
+
+```bash
+./paas run --input app_id=demo deploy
+```
+
+is safer than:
+
+```bash
+./paas run deploy --input app_id=demo
+```
+
+because the CLI uses Go's standard `flag` package. In practice, exported `INPUT_*` environment variables are the most reliable approach for secrets and repeatable command snippets.
+
 **Local Bash:** If any step has `local: true` and execution is not dry-run, Bash must be discoverable (`findBash`); otherwise the command fails early with a clear error.
 
 **Remote:** If any step is non-local, a server must be resolvable and SSH must succeed unless dry-run avoids connection (implementation may still load server env for masking when configured).
@@ -47,6 +61,14 @@ Prints configured server names and connection summary **without** printing secre
 ## Environment variables
 
 Inputs can be satisfied by process environment: keys `INPUT_<NAME>` match declared inputs after the same normalization as CLI.
+
+Example:
+
+```bash
+export INPUT_REGISTRY_USERNAME="my-apps"
+export INPUT_REGISTRY_PASSWORD="..."
+./paas run deploy
+```
 
 ## Related
 

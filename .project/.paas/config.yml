@@ -1,0 +1,13 @@
+server: production
+
+defaults:
+  INPUT_APP_NAME: starter
+  INPUT_APP_ID: starter-6e62b454
+  INPUT_REGISTRY_HOST: my-apps.registry.twcstorage.ru
+  INPUT_IMAGE_REPOSITORY: phpfasty/starter
+  INPUT_DASHBOARD_URL: http://127.0.0.1:3000
+  INPUT_DASHBOARD_USER: login
+  INPUT_DASHBOARD_PASS: "pass@123"
+  INPUT_HEALTHCHECK_URL: ""
+
+extensions_dir: .paas/extensions

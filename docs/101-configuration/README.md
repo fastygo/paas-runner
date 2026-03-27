@@ -32,7 +32,7 @@ servers:
     host: deploy.example.com
     port: 22
     user: root
-    key: ~/.ssh/id_ed25519
+    key: ~/.ssh/id_ed25712
     dashboard_user: ""
     dashboard_pass: ""
     host_key_check: strict

@@ -34,6 +34,18 @@ Exact YAML lives in `internal/extensions/` and mirrors under `extensions/`.
 
 Keep commands portable Bash; avoid relying on interactive prompts.
 
+## Real project override example
+
+The `@twelve-factor` project overrides `deploy` in `.paas/extensions/deploy.yml` to switch from the built-in local-image workflow to a remote-build workflow:
+
+- local step: `git rev-parse`
+- local step: `git archive | ssh ...`
+- remote steps: `docker login`, `docker build`, `docker push`
+- remote step: render compose and build dashboard payload
+- remote steps: update dashboard and trigger deploy
+
+This shows why project overrides are powerful: the binary stays the same, while the project can redefine `deploy` around its actual infrastructure constraints.
+
 ## Related
 
 - [DSL reference](../101-dsl/README.md)  
